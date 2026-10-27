@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Sumit Saha" />
+    <meta name="owner" content="learnwithsumit.com" />
+    <title><%= title %></title>
+    <link rel="shortcut icon" href="/images/favicon.png" />
+    <link rel="stylesheet" href="/css/toastify.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/toastify.js"></script>
+  </head>
+  <body>
+    <nav class="menu" aria-label="Main navigation">
+      <div class="menu-item"><a href="/inbox">Inbox</a></div>
+      <div class="menu-item"><a href="/users">Users</a></div>
+      <% if (userData && userData.username) { %>
+        <button class="menu-item logout-button" type="button" data-logout-button>Logout</button>
+      <% } else { %>
+        <div class="menu-item"><a href="/">Login</a></div>
+      <% } %>
+    </nav>
+    <div id="chat-container">
+      <div id="search-container">
+        <input type="text" placeholder="Search conversations" aria-label="Search conversations" />
+      </div>
+      <div id="conversation-list" aria-live="polite">
+        <p class="conversation-empty">No conversations yet. Create one to get started.</p>
+      </div>
+      <div id="new-message-container" class="new-message-container">
+        <a href="#" id="new-conversation-button" aria-label="Create new conversation">+</a>
+      </div>
+      <div id="chat-title">
+        <span id="chat-contact-name">Select a conversation</span>
+      </div>
+      <div id="chat-message-list" aria-live="polite">
+        <p id="chat-empty-state">Choose a conversation from the left to open the chat.</p>
+        <p id="chat-status" role="status"></p>
+      </div>
+      <form id="chat-form">
+        <input id="chat-input" type="text" placeholder="Select a conversation first" aria-label="Type a message" disabled />
+        <button id="send-message-button" type="submit" disabled>Send</button>
+      </form>
+    </div>
+
+    <div class="modal-wrapper" id="new-conversation-modal">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="new-conversation-title">
+        <button type="button" class="modal-close" aria-label="Close dialog">+</button>
+        <div class="modal-title">
+          <h2 id="new-conversation-title">Create New Conversation</h2>
+        </div>
+        <div class="modal-body">
+          <label class="sr-only" for="user-search-input">Name</label>
+          <input id="user-search-input" type="search" placeholder="Search by name" autocomplete="off" />
+          <p id="user-search-status" class="user-search-status" aria-live="polite"></p>
+          <ul id="user-search-results" class="user-search-results" aria-label="Matching users"></ul>
+        </div>
+      </div>
+    </div>
+    <script src="/js/logout.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/inbox.js"></script>
+  </body>
+</html>

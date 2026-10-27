@@ -1,0 +1,115 @@
+<% const formErrors = typeof errors !== "undefined" ? errors : {}; const formData = typeof data !== "undefined" ? data : {}; %>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f6fb" />
+    <title><%= title %></title>
+    <link rel="shortcut icon" href="/images/favicon.png" />
+    <link rel="stylesheet" href="/css/login.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="/" aria-label="Chat home">
+        <span class="wordmark-icon" aria-hidden="true">C</span>
+        <span>Convo</span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <span>Already have an account?</span>
+        <a class="nav-cta" href="/">Log in</a>
+      </nav>
+    </header>
+
+    <main class="login-card signup-card">
+      <section class="illustration-panel" aria-label="Chat with your community">
+        <div class="welcome-copy">
+          <span class="welcome-pill"><span></span> YOUR PEOPLE, CLOSER</span>
+          <h2>Make room for<br />better conversations.</h2>
+          <p>One place for the people and messages that matter.</p>
+          <div class="chat-preview" aria-hidden="true">
+            <div class="preview-avatar">A</div>
+            <div class="preview-lines"><span></span><span></span></div>
+            <div class="preview-bubble">Hey! Great to have you here 👋</div>
+          </div>
+        </div>
+        <span class="panel-decoration panel-decoration-one" aria-hidden="true"></span>
+        <span class="panel-decoration panel-decoration-two" aria-hidden="true"></span>
+      </section>
+
+      <section class="form-panel" aria-labelledby="signup-heading">
+        <p class="form-eyebrow">GET STARTED — IT'S FREE</p>
+        <h1 id="signup-heading">Create your account</h1>
+        <p class="form-intro">A few details and you’re ready to connect.</p>
+
+        <form class="login-form signup-form" method="post" action="/signup">
+          <label for="name">Your name</label>
+          <input
+            id="name"
+            type="text"
+            name="name"
+            placeholder="e.g. Alex Morgan"
+            value="<%= formData.name || '' %>"
+            autocomplete="name"
+            minlength="2"
+            maxlength="80"
+            required
+            aria-describedby="name-error"
+          />
+          <p class="form-message" id="name-error"><%= formErrors.name || "" %></p>
+
+          <label for="email">Email address</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            placeholder="you@example.com"
+            value="<%= formData.email || '' %>"
+            autocomplete="email"
+            required
+            aria-describedby="email-error"
+          />
+          <p class="form-message" id="email-error"><%= formErrors.email || "" %></p>
+
+          <label for="mobile">Mobile number</label>
+          <input
+            id="mobile"
+            type="tel"
+            name="mobile"
+            placeholder="11-digit mobile number"
+            value="<%= formData.mobile || '' %>"
+            autocomplete="tel"
+            inputmode="numeric"
+            pattern="[0-9]{11}"
+            minlength="11"
+            maxlength="11"
+            required
+            aria-describedby="mobile-error"
+          />
+          <p class="form-message" id="mobile-error"><%= formErrors.mobile || "" %></p>
+
+          <label for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            placeholder="At least 8 characters"
+            autocomplete="new-password"
+            minlength="8"
+            maxlength="100"
+            required
+            aria-describedby="password-hint password-error"
+          />
+          <p class="password-hint" id="password-hint">Use uppercase and lowercase letters, a number, and a symbol.</p>
+          <p class="form-message" id="password-error"><%= formErrors.password || "" %></p>
+
+          <% if (formErrors.common) { %>
+            <p class="form-message common-message" role="alert"><%= formErrors.common %></p>
+          <% } %>
+          <button class="login-button" type="submit">Create account <span aria-hidden="true">→</span></button>
+        </form>
+        <p class="auth-switch">By creating an account, you agree to keep conversations kind and respectful.</p>
+      </section>
+    </main>
+  </body>
+</html>

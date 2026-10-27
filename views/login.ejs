@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Sumit Saha" />
+    <meta name="owner" content="learnwithsumit.com" />
+    <title><%= title %></title>
+    <link rel="shortcut icon" href="/images/favicon.png" />
+    <link rel="stylesheet" href="/css/toastify.css" />
+    <link rel="stylesheet" href="/css/login.css" />
+    <script src="/js/toastify.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="/" aria-label="Chat home">
+        <span class="wordmark-icon" aria-hidden="true">C</span>
+        <span>Convo</span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <span>New here?</span>
+        <a class="nav-cta" href="/signup">Create account</a>
+      </nav>
+    </header>
+
+    <main class="login-card">
+      <section class="illustration-panel" aria-hidden="true">
+        <svg class="chat-illustration" viewBox="0 0 280 220" role="presentation">
+          <path class="bubble" d="M28 34h145a18 18 0 0 1 18 18v69a18 18 0 0 1-18 18H91l-35 25v-25h-28a18 18 0 0 1-18-18V52a18 18 0 0 1 18-18Z" />
+          <path class="bubble-line" d="M54 75h109M54 98h77" />
+          <circle class="typing-dot" cx="226" cy="142" r="6" />
+          <circle class="typing-dot" cx="246" cy="142" r="6" />
+          <circle class="typing-dot" cx="266" cy="142" r="6" />
+          <path class="bubble bubble-front" d="M119 150h111a15 15 0 0 1 15 15v23a15 15 0 0 1-15 15h-8v16l-24-16h-79a15 15 0 0 1-15-15v-23a15 15 0 0 1 15-15Z" />
+          <path class="bubble-line" d="M137 176h62" />
+        </svg>
+      </section>
+
+      <section class="form-panel" aria-labelledby="login-heading">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 74 74">
+            <circle class="brand-ring" cx="37" cy="37" r="34" />
+            <path class="brand-face" d="M37 18c-10 0-18 8-18 18v10c0 8 6 14 14 14h8c8 0 14-6 14-14V36c0-10-8-18-18-18Z" />
+            <path class="brand-ear" d="M20 39h-4v8h7M54 39h4v8h-7" />
+            <path class="brand-glass" d="M26 39h9v7h-9zM39 39h9v7h-9z" />
+            <path class="brand-bridge" d="M35 42h4" />
+          </svg>
+        </div>
+        <p class="form-eyebrow">Welcome back</p>
+        <h1 id="login-heading">Good conversations start here.</h1>
+
+        <form class="login-form" method="post" action="/">
+          <label class="sr-only" for="username">Email or mobile</label>
+          <input
+            id="username"
+            type="text"
+            name="username"
+            placeholder="Enter mobile or email"
+            value="<%= data && data.username ? data.username : '' %>"
+            autocomplete="username"
+            required
+            aria-describedby="username-error"
+          />
+          <p class="form-message" id="username-error" role="alert"><%= typeof errors !== "undefined" && errors.error && errors.error.username ? errors.error.username.msg : "" %></p>
+
+          <label class="sr-only" for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            placeholder="Enter password"
+            autocomplete="current-password"
+            minlength="6"
+            required
+            aria-describedby="password-error"
+          />
+          <p class="form-message" id="password-error" role="alert"><%= typeof errors !== "undefined" && errors.error && errors.error.password ? errors.error.password.msg : "" %></p>
+
+          <button class="login-button" type="submit">Login</button>
+        </form>
+        <p class="auth-switch">New to Convo? <a href="/signup">Create an account</a></p>
+      </section>
+    </main>
+    <script src="/js/logout.js"></script>
+  </body>
+</html>

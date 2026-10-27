@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Sumit Saha" />
+    <meta name="owner" content="learnwithsumit.com" />
+    <title><%= title %></title>
+    <link rel="shortcut icon" href="/images/favicon.png" />
+    <link rel="stylesheet" href="/css/toastify.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/toastify.js"></script>
+  </head>
+  <body>
+    <nav class="menu" aria-label="Main navigation">
+      <div class="menu-item"><a href="/inbox">Inbox</a></div>
+      <div class="menu-item"><a href="/users">Users</a></div>
+      <% if (userData && userData.username) { %>
+        <button class="menu-item logout-button" type="button" data-logout-button>Logout</button>
+      <% } else { %>
+        <div class="menu-item"><a href="/">Login</a></div>
+      <% } %>
+    </nav>
+
+    <div class="manageUser-container">
+      <div id="title">
+        <h2>Manage Users</h2>
+      </div>
+
+      <div class="new-message-container new-user">
+        <a href="#" onclick="openModal()">+</a>
+      </div>
+
+      <div id="users-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Manage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (users && users.length > 0) { %>
+              <% users.forEach(function (user) { %>
+            <tr>
+              <td class="name">
+                <img
+                  src="<%= user.avatar ? `/assets/${encodeURIComponent(user.avatar)}` : '/images/user1.png' %>"
+                  alt="<%= user.name %>"
+                />
+                <span><%= user.name %></span>
+              </td>
+              <td><%= user.email %></td>
+              <td class="manage">
+                <button
+                  type="button"
+                  class="delete-user-button"
+                  data-user-id="<%= user._id %>"
+                  aria-label="Delete <%= user.name %>"
+                  style="background: none; border: 0; cursor: pointer; padding: 0;"
+                >
+                  <img src="/images/trash.png" alt="" />
+                </button>
+              </td>
+            </tr>
+              <% }); %>
+            <% } else { %>
+            <tr>
+              <td colspan="3">No users found.</td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="modal-wrapper" id="add-user-modal">
+      <div class="modal">
+        <a href="#" onclick="closeModal()" class="modal-close">+</a>
+        <div class="modal-title">
+          <h2>Create New User</h2>
+        </div>
+        <div class="modal-body">
+          <form
+            id="add-user-form"
+            method="post"
+            action="/users"
+            enctype="multipart/form-data"
+          >
+            <input type="text" placeholder="enter name" name="name" />
+            <p class="error name-error"></p>
+
+            <input type="text" placeholder="enter email" name="email" />
+            <p class="error email-error"></p>
+
+            <input type="text" placeholder="enter mobile" name="mobile" />
+            <p class="error mobile-error"></p>
+
+            <input
+              type="password"
+              placeholder="enter password"
+              name="password"
+            />
+            <p class="error password-error"></p>
+
+            <input type="file" name="avatar" />
+            <p class="error avatar-error"></p>
+
+            <p class="error common-error"></p>
+
+            <input type="submit" value="Submit" />
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="/js/logout.js"></script>
+    <script>
+      const modal = document.querySelector("#add-user-modal");
+      const addUserForm = document.querySelector("#add-user-form");
+
+      function closeModal() {
+        modal.style.display = "none";
+      }
+
+      function openModal() {
+        modal.style.display = "block";
+      }
+
+      function showToast(message, backgroundColor) {
+        Toastify({
+          text: message,
+          duration: 3000,
+          close: true,
+          gravity: "top",
+          position: "right",
+          backgroundColor,
+        }).showToast();
+      }
+
+      document
+        .querySelector("#users-table tbody")
+        .addEventListener("click", async function (event) {
+          const deleteButton = event.target.closest(".delete-user-button");
+          if (!deleteButton) return;
+
+          deleteButton.disabled = true;
+
+          try {
+            const response = await fetch(
+              `/users/${encodeURIComponent(deleteButton.dataset.userId)}`,
+              { method: "DELETE" },
+            );
+            const result = await response.json();
+
+            if (!response.ok) {
+              throw new Error(
+                result.errors?.common?.message ||
+                  result.message ||
+                  `Delete failed (${response.status}).`,
+              );
+            }
+
+            deleteButton.closest("tr").remove();
+
+            const usersTableBody = document.querySelector("#users-table tbody");
+            if (!usersTableBody.querySelector(".delete-user-button")) {
+              usersTableBody.innerHTML =
+                '<tr><td colspan="3">No users found.</td></tr>';
+            }
+
+            showToast(result.message || "User deleted successfully.", "#4caf50");
+          } catch (error) {
+            showToast(error.message || "Unable to delete user.", "#e74c3c");
+            deleteButton.disabled = false;
+          }
+        });
+
+      function showFormError(field, message) {
+        const errorElement = addUserForm.querySelector(`.${field}-error`);
+        if (!errorElement || !message) return false;
+
+        errorElement.textContent = message;
+        errorElement.classList.add("show");
+        return true;
+      }
+
+      addUserForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const errorFields = ["name", "email", "mobile", "password", "avatar"];
+        errorFields.forEach(function (field) {
+          const errorElement = addUserForm.querySelector(`.${field}-error`);
+          errorElement.textContent = "";
+          errorElement.classList.remove("show");
+        });
+        const commonError = addUserForm.querySelector(".common-error");
+        commonError.textContent = "";
+        commonError.classList.remove("show");
+
+        const submitButton = addUserForm.querySelector('input[type="submit"]');
+        submitButton.disabled = true;
+
+        try {
+          const response = await fetch(addUserForm.action, {
+            method: "POST",
+            body: new FormData(addUserForm),
+          });
+          const result = await response.json();
+
+          if (!response.ok) {
+            const errors = result.errors || {};
+            let hasFieldError = false;
+
+            Object.entries(errors).forEach(function ([field, error]) {
+              const message = error.msg || error.message;
+              hasFieldError = showFormError(field, message) || hasFieldError;
+            });
+
+            if (!hasFieldError) {
+              showFormError(
+                "common",
+                errors.common?.message ||
+                  result.message ||
+                  `Request failed (${response.status}).`,
+              );
+            }
+            return;
+          }
+
+          addUserForm.reset();
+          closeModal();
+          showToast(result.message, "#4caf50");
+        } catch (error) {
+          showFormError("common", "Unable to create user. Please try again.");
+        } finally {
+          submitButton.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
